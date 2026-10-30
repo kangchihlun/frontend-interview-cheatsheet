@@ -1,0 +1,79 @@
+@use 'mixins' as m;
+
+.label {
+  margin: 14px 0 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.split {
+  display: flex;
+  gap: 8px;
+  > * {
+    @include m.demo-box;
+  }
+}
+
+.fixed-fluid {
+  aside {
+    flex: 0 0 240px; // 不放大、不縮小、基準 240px
+  }
+  main {
+    flex: 1 1 0;
+    min-width: 0; // ⚠️ flex 子項預設 min-width: auto，不設 0 會被長內容撐開
+    overflow-wrap: anywhere;
+  }
+}
+
+.col {
+  flex: 1; // = flex: 1 1 0%
+  text-align: center;
+}
+
+.ratio .col:nth-child(2) {
+  flex: 2;
+}
+
+.wrap {
+  flex-wrap: wrap;
+  .card {
+    // 一列 3 張：扣掉 2 個 gap 再三等分
+    flex: 0 0 calc((100% - 2 * 8px) / 3);
+    @include m.down(md) {
+      flex-basis: calc((100% - 8px) / 2);
+    }
+  }
+}
+
+.justify {
+  position: relative;
+  margin-bottom: 6px;
+  padding-top: 18px;
+  @include m.demo-box(var(--warn));
+  > * {
+    padding: 2px 10px;
+  }
+  .tag {
+    position: absolute;
+    top: 0;
+    left: 6px;
+    border: 0;
+    background: none;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+}
+
+.navbar {
+  align-items: center;
+  a {
+    cursor: pointer;
+  }
+  > * {
+    padding: 4px 10px;
+  }
+  .push {
+    margin-left: auto;
+  }
+}

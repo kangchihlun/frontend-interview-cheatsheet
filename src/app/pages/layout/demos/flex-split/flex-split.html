@@ -1,0 +1,50 @@
+<!-- 1. 固定 + 自適應：側欄固定寬，主內容吃剩下空間 -->
+<p class="label">① 固定 240px + 自適應（flex: 1 + min-width: 0）</p>
+<div class="split fixed-fluid">
+  <aside>aside · flex: 0 0 240px</aside>
+  <main>main · flex: 1 1 0; min-width: 0 → 長字串也不會撐爆：SuperLongWordWithoutAnySpacesThatWouldOverflowTheContainer</main>
+</div>
+
+<!-- 2. 等分 -->
+<p class="label">② 三等分（flex: 1）</p>
+<div class="split">
+  <div class="col">1</div>
+  <div class="col">1</div>
+  <div class="col">1</div>
+</div>
+
+<!-- 3. 比例 -->
+<p class="label">③ 比例 1 : 2 : 1（flex-grow 權重）</p>
+<div class="split ratio">
+  <div class="col">flex: 1</div>
+  <div class="col">flex: 2</div>
+  <div class="col">flex: 1</div>
+</div>
+
+<!-- 4. 換行卡片 -->
+<p class="label">④ 換行卡片（flex-wrap + flex-basis + gap）</p>
+<div class="split wrap">
+  @for (i of cards; track i) {
+    <div class="card">card {{ i }}</div>
+  }
+</div>
+
+<!-- 5. 主軸分配 -->
+<p class="label">⑤ justify-content 對齊方式</p>
+@for (j of justify; track j) {
+  <div class="split justify" [style.justify-content]="j">
+    <span class="tag">{{ j }}</span>
+    <div class="dot">A</div>
+    <div class="dot">B</div>
+    <div class="dot">C</div>
+  </div>
+}
+
+<!-- 6. 推到最右邊 -->
+<p class="label">⑥ margin-left: auto 把元素推到最右（導覽列常用）</p>
+<div class="split navbar">
+  <strong>Logo</strong>
+  <a>行情</a>
+  <a>交易</a>
+  <a class="push">登入</a>
+</div>

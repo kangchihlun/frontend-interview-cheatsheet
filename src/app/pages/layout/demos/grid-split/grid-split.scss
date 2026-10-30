@@ -1,0 +1,107 @@
+@use 'mixins' as m;
+
+$columns: 12;
+$gap: 8px;
+
+.label {
+  margin: 14px 0 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+%cell {
+  @include m.demo-box;
+}
+
+// ① 12 欄：用 @for 產生 .span-N 與 .start-N
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+  > div {
+    @extend %cell;
+  }
+}
+
+@for $i from 1 through $columns {
+  .span-#{$i} {
+    grid-column: span $i;
+  }
+  .start-#{$i} {
+    grid-column-start: $i;
+  }
+}
+
+// ② 具名區塊；小螢幕重新排列只要改 areas 字串
+.areas {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: 140px 1fr 120px;
+  grid-template-rows: 40px 120px 40px;
+  grid-template-areas:
+    'head head head'
+    'side main ad'
+    'foot foot foot';
+  > div {
+    @extend %cell;
+  }
+  @include m.down(md) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: 'head' 'main' 'side' 'ad' 'foot';
+  }
+}
+
+.a-head { grid-area: head; }
+.a-side { grid-area: side; }
+.a-main { grid-area: main; }
+.a-ad { grid-area: ad; }
+.a-foot { grid-area: foot; }
+
+// ③ auto-fit vs auto-fill：項目不足一列時，auto-fit 會把空軌道收合讓項目撐滿
+.auto-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: $gap;
+  > div {
+    @extend %cell;
+    height: 60px;
+  }
+}
+
+// ④
+.asym {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-auto-rows: 60px;
+  gap: $gap;
+  > div {
+    @extend %cell;
+  }
+  .big {
+    grid-row: span 2;
+  }
+}
+
+// ⑤ subgrid：子卡片沿用父網格的 row 軌道
+.subgrid-wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-rows: auto 1fr auto;
+  gap: $gap;
+}
+
+.sub-card {
+  @extend %cell;
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  gap: 4px;
+  h4,
+  p {
+    margin: 0;
+  }
+  .btn {
+    justify-self: start;
+  }
+}

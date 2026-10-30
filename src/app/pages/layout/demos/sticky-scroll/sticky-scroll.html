@@ -1,0 +1,54 @@
+<div class="grid">
+  <div>
+    <p class="label">① 表格：表頭 + 第一欄同時 sticky（行情報價表常見）</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>商品</th>
+            @for (c of cols; track c) {
+              <th>{{ c }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of rows; track r) {
+            <tr>
+              <th>{{ r }}</th>
+              @for (c of cols; track c) {
+                <td>{{ (($index + 1) * 13.37).toFixed(2) }}</td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div>
+    <p class="label">② 分組標題 sticky（每組標題會被下一組推走）</p>
+    <div class="group-list">
+      @for (g of groups; track g.name) {
+        <section>
+          <h4>{{ g.name }}</h4>
+          @for (item of g.items; track item) {
+            <div class="item">{{ item }}</div>
+          }
+        </section>
+      }
+    </div>
+  </div>
+
+  <div>
+    <p class="label">③ 面板：header / footer 固定，只有 body 捲動（flex column）</p>
+    <div class="panel">
+      <header>委託單（固定 header）</header>
+      <div class="body">
+        @for (r of rows; track r) {
+          <div class="item">#{{ $index + 1 }} {{ r }} 買進 1.000</div>
+        }
+      </div>
+      <footer><button class="btn primary" type="button">送出</button></footer>
+    </div>
+  </div>
+</div>

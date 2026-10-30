@@ -1,0 +1,309 @@
+// Admin 版型：Grid 切四塊 + BEM 命名 + CSS 變數控制側欄寬度
+// 真實專案：.admin 高度 = 100dvh，.mobile 改成 @include m.down(md) { ... }
+@use 'mixins' as m;
+
+$sidebar-w: 240px;
+$sidebar-w-collapsed: 64px;
+$topbar-h: 52px;
+$ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+.controls {
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.admin {
+  --sidebar-w: #{$sidebar-w};
+  position: relative;
+  height: 480px;
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: $topbar-h 1fr;
+  grid-template-areas:
+    'side top'
+    'side main';
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: grid-template-columns 0.25s $ease;
+
+  &.collapsed {
+    --sidebar-w: #{$sidebar-w-collapsed};
+  }
+}
+
+// ── Sidebar ──────────────────────────────
+.sidebar {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  z-index: 3;
+
+  &__brand {
+    flex: 0 0 $topbar-h;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  &__logo {
+    @include m.flex-center;
+    flex: 0 0 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+  }
+  &__nav {
+    flex: 1;
+    overflow-y: auto; // 選單很長時只有選單捲動
+    overflow-x: hidden;
+    padding: 8px 0;
+  }
+}
+
+// ── Menu（遞迴層級用 CSS 變數 --depth 算縮排）──
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  &__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 14px 9px calc(18px + var(--depth, 0) * 18px);
+    border: 0;
+    background: none;
+    color: var(--text-muted);
+    text-align: left;
+    white-space: nowrap;
+
+    &:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+    &.in-path {
+      color: var(--text);
+    }
+    &.is-active {
+      color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 14%, transparent);
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 3px;
+        background: var(--primary);
+      }
+    }
+  }
+  &__icon {
+    flex: 0 0 20px;
+    text-align: center;
+  }
+  &__label {
+    flex: 1;
+    @include m.truncate;
+  }
+  &__badge {
+    background: var(--down);
+    color: #fff;
+    font-size: 11px;
+    border-radius: 10px;
+    padding: 0 6px;
+  }
+  &__caret {
+    font-size: 10px;
+    transition: transform 0.2s;
+  }
+
+  // 展開/收合動畫：grid-template-rows 0fr → 1fr（可動畫化 height: auto 的技巧）
+  &__children {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s $ease;
+    > .menu {
+      overflow: hidden;
+    }
+  }
+  &__item.is-open > &__children {
+    grid-template-rows: 1fr;
+  }
+  &__item.is-open > &__link &__caret {
+    transform: rotate(90deg);
+  }
+}
+
+// ── 收合模式：只留 icon，子選單改 flyout ──
+.collapsed {
+  .sidebar__text,
+  .menu__label,
+  .menu__badge,
+  .menu__caret {
+    display: none;
+  }
+  .sidebar__nav {
+    overflow: visible; // 讓 flyout 能超出側欄
+  }
+  .menu[data-depth='0'] > .menu__item {
+    position: relative;
+    > .menu__link {
+      justify-content: center;
+      padding: 10px 0;
+    }
+    > .menu__children {
+      position: absolute;
+      left: 100%;
+      top: 0;
+      min-width: 180px;
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+      .menu__label,
+      .menu__caret,
+      .menu__badge {
+        display: initial;
+      }
+      .menu__link {
+        --depth: 0 !important;
+      }
+    }
+    &:hover > .menu__children {
+      display: block;
+    }
+  }
+  // flyout 內的第二層以下直接全部展開
+  .menu__children .menu__children {
+    grid-template-rows: 1fr;
+  }
+}
+
+// ── 手機：off-canvas 抽屜 ──
+.mobile {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    'top'
+    'main';
+
+  .sidebar {
+    grid-area: auto;
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: $sidebar-w;
+    transform: translateX(-100%);
+    transition: transform 0.25s $ease;
+  }
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: rgb(0 0 0 / 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  &.drawer-open {
+    .sidebar {
+      transform: none;
+    }
+    .backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+.backdrop {
+  display: none;
+  .mobile & {
+    display: block;
+  }
+}
+
+// ── Topbar ──
+.topbar {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+
+.icon-btn {
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.breadcrumb {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--text-muted);
+  li {
+    @include m.truncate;
+  }
+  li + li::before {
+    content: '/';
+    margin: 0 8px;
+    opacity: 0.6;
+  }
+  li:last-child {
+    color: var(--text);
+  }
+}
+
+.avatar {
+  @include m.flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--up);
+  color: #fff;
+}
+
+// ── Main：唯一捲動區 ──
+.main {
+  grid-area: main;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px;
+  background: var(--bg);
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  height: 110px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}

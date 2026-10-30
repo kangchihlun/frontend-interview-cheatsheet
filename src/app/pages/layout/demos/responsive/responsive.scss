@@ -1,0 +1,144 @@
+@use 'sass:list';
+@use 'tokens' as t;
+@use 'mixins' as m;
+
+.label {
+  margin: 16px 0 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+// ① Container Query
+.resizer {
+  resize: horizontal;
+  overflow: auto;
+  width: 520px;
+  min-width: 220px;
+  max-width: 100%;
+  padding: 8px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+}
+
+.cq-wrap {
+  container: card / inline-size; // 宣告容器名稱 card、查詢 inline-size
+}
+
+.product {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr;
+  padding: 12px;
+  background: var(--surface-2);
+  border-radius: 8px;
+  .thumb {
+    @include m.flex-center;
+    aspect-ratio: 16 / 9;
+    font-size: 32px;
+    background: var(--bg);
+    border-radius: 6px;
+  }
+  h4,
+  p {
+    margin: 0 0 4px;
+  }
+  p {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .price {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    font-family: var(--font-mono);
+  }
+
+  @container card (min-width: 360px) {
+    grid-template-columns: 96px 1fr;
+    .thumb {
+      aspect-ratio: 1;
+    }
+    .price {
+      grid-column: 2;
+    }
+  }
+
+  @container card (min-width: 560px) {
+    grid-template-columns: 96px 1fr auto;
+    align-items: center;
+    .price {
+      grid-column: auto;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+  }
+}
+
+// ② Media Query：行動優先，用 @each 從 map 產生
+.mq-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+  @include m.up(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @include m.up(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @include m.up(xl) {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.mq-item {
+  @include m.demo-box;
+}
+
+.bp-indicator {
+  margin: 6px 0 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  &::after {
+    content: 'xs (< 576px)';
+    color: var(--warn);
+  }
+  @each $name, $px in t.$breakpoints {
+    @include m.up($name) {
+      &::after {
+        content: '#{$name} (≥ #{$px})';
+      }
+    }
+  }
+}
+
+// ③
+.fluid {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(16px, 2vw + 8px, 32px);
+}
+
+// ④
+.ratio-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.ratio {
+  @include m.demo-box;
+  @include m.flex-center;
+  width: 140px;
+}
+
+$ratios: (
+  '16-9': (16, 9),
+  '4-3': (4, 3),
+  '1-1': (1, 1),
+);
+
+@each $name, $r in $ratios {
+  .r-#{$name} {
+    aspect-ratio: #{list.nth($r, 1)} / #{list.nth($r, 2)};
+  }
+}

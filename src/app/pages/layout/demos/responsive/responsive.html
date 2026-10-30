@@ -1,0 +1,34 @@
+<p class="label">① Container Query：拖拉右下角改變「容器」寬度（不是視窗），卡片自己決定排版</p>
+<div class="resizer">
+  <div class="cq-wrap">
+    <article class="product">
+      <div class="thumb">📈</div>
+      <div class="info">
+        <h4>BTC/USDT 永續</h4>
+        <p>容器 &lt; 360px：直排；360~560px：左圖右文；&gt; 560px：三欄含價格區。</p>
+      </div>
+      <div class="price">
+        <strong class="up">67,890.5</strong>
+        <span class="up">+2.31%</span>
+      </div>
+    </article>
+  </div>
+</div>
+
+<p class="label">② Media Query（行動優先）：縮放瀏覽器視窗觀察，目前視窗斷點 →</p>
+<div class="mq-grid">
+  @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+    <div class="mq-item">item {{ i }}</div>
+  }
+</div>
+<p class="bp-indicator"></p>
+
+<p class="label">③ clamp() 流體字級：font-size: clamp(16px, 2vw + 8px, 32px)</p>
+<p class="fluid">流體標題 Fluid Typography</p>
+
+<p class="label">④ 圖片比例 aspect-ratio + object-fit</p>
+<div class="ratio-row">
+  <div class="ratio r-16-9">16 / 9</div>
+  <div class="ratio r-4-3">4 / 3</div>
+  <div class="ratio r-1-1">1 / 1</div>
+</div>

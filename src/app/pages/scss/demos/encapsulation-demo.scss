@@ -1,0 +1,29 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  // CSS 變數會繼承進 Shadow DOM
+  --shadow-color: #c56cf0;
+}
+
+.title {
+  color: var(--primary);
+  margin: 0;
+}
+
+// ::ng-deep（已標示 deprecated，但仍可用）：穿透到子元件。
+// 一定要搭配 :host 前綴，否則會變成全域樣式！
+:host ::ng-deep app-enc-emulated .inner {
+  background: #f5a623;
+  color: #000;
+  padding: 0 4px;
+}
+
+app-enc-emulated,
+app-enc-none,
+app-enc-shadow {
+  display: block;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}

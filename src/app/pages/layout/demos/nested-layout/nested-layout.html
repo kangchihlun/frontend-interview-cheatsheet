@@ -1,0 +1,34 @@
+<div class="row controls">
+  <label><input type="checkbox" [checked]="fixed()" (change)="fixed.set(!fixed())" /> 套用 min-height: 0（關掉看內層捲動失效、整個版面被撐爆）</label>
+  <label><input type="checkbox" [checked]="outline()" (change)="outline.set(!outline())" /> 顯示層級外框</label>
+</div>
+
+<!-- L1：整頁 grid（header + body），固定高度 = 模擬 100dvh -->
+<div class="l1" [class.fixed]="fixed()" [class.outline]="outline()">
+  <header class="lv" data-lv="L1 grid">Header</header>
+
+  <!-- L2：body 為 flex row：sidebar + workspace -->
+  <div class="l2 lv" data-lv="L2 flex row">
+    <aside class="lv" data-lv="sidebar">側欄</aside>
+
+    <!-- L3：workspace 為 flex column：toolbar + panels -->
+    <section class="l3 lv" data-lv="L3 flex column">
+      <div class="toolbar">工具列</div>
+
+      <!-- L4：panels 為 2x2 grid -->
+      <div class="l4 lv" data-lv="L4 grid 2×2">
+        @for (panel of panels; track panel) {
+          <!-- L5：每個 panel 是 flex column，標題固定，清單自己捲動 -->
+          <article class="l5 lv" data-lv="L5 flex column">
+            <h4>{{ panel }}</h4>
+            <ul>
+              @for (i of rows; track i) {
+                <li>{{ panel }} - row {{ i }}</li>
+              }
+            </ul>
+          </article>
+        }
+      </div>
+    </section>
+  </div>
+</div>

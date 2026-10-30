@@ -1,0 +1,84 @@
+@use 'mixins' as m;
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+}
+
+.logo {
+  @include m.flex-center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary), var(--up));
+  color: #fff;
+  font-weight: 700;
+}
+
+// 頁籤列：手機上水平捲動，不換行
+.tabbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  padding: 0 12px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  scrollbar-width: thin;
+
+  a {
+    flex: 0 0 auto;
+    padding: 10px 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    &:hover {
+      color: var(--text);
+    }
+    &.active {
+      color: var(--text);
+      border-bottom-color: var(--primary);
+    }
+  }
+  .icon {
+    display: inline-block;
+    min-width: 18px;
+    margin-right: 4px;
+    color: var(--primary);
+    font-size: 12px;
+  }
+}
+
+.content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 16px 60px;
+  @include m.up(md) {
+    padding: 24px 24px 80px;
+  }
+}

@@ -1,0 +1,141 @@
+@use 'sass:map';
+
+// 多層級排版的核心觀念：
+// 1. 高度要「一路傳下去」：每一層都是 flex/grid 容器，子層用 1fr / flex: 1 吃滿
+// 2. flex/grid 子項預設 min-height: auto（不會比內容小）→ 內層想捲動，每一層都要 min-height: 0
+// 3. 只有最內層需要 overflow: auto
+
+$colors: (
+  1: #4f8cff,
+  2: #16c784,
+  3: #f5a623,
+  4: #c56cf0,
+  5: #ea3943,
+);
+
+.controls {
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.l1 {
+  height: 420px;
+  display: grid;
+  grid-template-rows: 40px 1fr;
+  gap: 6px;
+  background: var(--surface-2);
+  padding: 6px;
+  border-radius: 8px;
+  overflow: hidden; // 讓「爆版」可以被看見
+}
+
+header {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  background: var(--surface);
+  border-radius: 6px;
+}
+
+.l2 {
+  display: flex;
+  gap: 6px;
+  aside {
+    flex: 0 0 120px;
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 8px;
+  }
+}
+
+.l3 {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  .toolbar {
+    flex: 0 0 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    background: var(--surface);
+    border-radius: 6px;
+  }
+}
+
+.l4 {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+}
+
+.l5 {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-radius: 6px;
+  h4 {
+    margin: 0;
+    padding: 6px 8px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  ul {
+    flex: 1;
+    margin: 0;
+    padding: 4px 8px 4px 24px;
+    font-size: 12px;
+    overflow: auto; // 只有最內層捲動
+  }
+}
+
+// ✅ 關鍵修正：每一層 flex/grid 子項都要允許縮小
+.fixed {
+  .l2,
+  .l3,
+  .l4,
+  .l5 {
+    min-height: 0;
+  }
+  .l3 {
+    min-width: 0;
+  }
+}
+
+// 層級外框 + 標籤
+.outline .lv {
+  position: relative;
+  outline-offset: -1px;
+  &::after {
+    content: attr(data-lv);
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 10px;
+    padding: 0 4px;
+    color: #fff;
+    border-bottom-left-radius: 4px;
+    pointer-events: none;
+  }
+}
+
+$lv-map: (
+  header: 1,
+  '.l2': 2,
+  aside: 2,
+  '.l3': 3,
+  '.l4': 4,
+  '.l5': 5,
+);
+
+@each $selector, $lv in $lv-map {
+  .outline #{$selector}.lv {
+    $c: map.get($colors, $lv);
+    outline: 2px solid $c;
+    &::after {
+      background: $c;
+    }
+  }
+}

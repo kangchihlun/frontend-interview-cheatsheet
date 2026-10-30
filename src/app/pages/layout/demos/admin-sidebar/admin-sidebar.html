@@ -1,0 +1,73 @@
+<div class="row controls">
+  <button class="btn" type="button" (click)="toggleSidebar()">☰ 切換側欄</button>
+  <label><input type="checkbox" [checked]="mobile()" (change)="mobile.set(!mobile()); drawerOpen.set(false)" /> 模擬手機（off-canvas 抽屜）</label>
+  <span class="muted">收合狀態滑過第一層會出現 flyout 子選單</span>
+</div>
+
+<div class="admin" [class.collapsed]="collapsed() && !mobile()" [class.mobile]="mobile()" [class.drawer-open]="drawerOpen()">
+  <aside class="sidebar" aria-label="主選單">
+    <div class="sidebar__brand">
+      <span class="sidebar__logo">TX</span>
+      <span class="sidebar__text">Trading Admin</span>
+    </div>
+    <nav class="sidebar__nav">
+      <ng-container *ngTemplateOutlet="tree; context: { $implicit: menu, depth: 0 }" />
+    </nav>
+  </aside>
+
+  <!-- 遞迴樣板：無限層級選單 -->
+  <ng-template #tree let-nodes let-depth="depth">
+    <ul class="menu" [class.menu--sub]="depth > 0" [attr.data-depth]="depth">
+      @for (node of nodes; track node.id) {
+        <li class="menu__item" [class.is-open]="expanded().has(node.id)">
+          <button
+            type="button"
+            class="menu__link"
+            [class.is-active]="activeId() === node.id"
+            [class.in-path]="isInActivePath(node)"
+            [style.--depth]="depth"
+            [attr.title]="node.label"
+            [attr.aria-expanded]="node.children ? expanded().has(node.id) : null"
+            (click)="toggle(node)"
+          >
+            <span class="menu__icon">{{ node.icon ?? '•' }}</span>
+            <span class="menu__label">{{ node.label }}</span>
+            @if (node.badge) {
+              <span class="menu__badge">{{ node.badge }}</span>
+            }
+            @if (node.children) {
+              <span class="menu__caret">▸</span>
+            }
+          </button>
+          @if (node.children) {
+            <div class="menu__children">
+              <ng-container *ngTemplateOutlet="tree; context: { $implicit: node.children, depth: depth + 1 }" />
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  </ng-template>
+
+  <div class="backdrop" (click)="drawerOpen.set(false)"></div>
+
+  <header class="topbar">
+    <button class="icon-btn" type="button" (click)="toggleSidebar()" aria-label="切換側欄">☰</button>
+    <ol class="breadcrumb">
+      <li>首頁</li>
+      @for (b of breadcrumb(); track b.id) {
+        <li>{{ b.label }}</li>
+      }
+    </ol>
+    <span class="avatar">K</span>
+  </header>
+
+  <main class="main">
+    <h3>{{ breadcrumb().at(-1)?.label }}</h3>
+    <div class="cards">
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+        <div class="card">內容卡片 {{ i }}</div>
+      }
+    </div>
+  </main>
+</div>

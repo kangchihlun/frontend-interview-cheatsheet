@@ -1,0 +1,205 @@
+@use 'mixins' as m;
+
+.hint {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+.resizer {
+  resize: horizontal;
+  overflow: auto;
+  max-width: 100%;
+  min-width: 300px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.terminal {
+  container-type: inline-size;
+}
+
+// 預設（窄）：單欄
+.board {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    'ticker'
+    'chart'
+    'form'
+    'book'
+    'positions';
+
+  @container (min-width: 600px) {
+    grid-template-columns: 1fr 240px;
+    grid-template-areas:
+      'ticker    ticker'
+      'chart     book'
+      'form      book'
+      'positions positions';
+  }
+
+  @container (min-width: 900px) {
+    grid-template-columns: 1fr 240px 260px;
+    grid-template-rows: auto 320px auto;
+    grid-template-areas:
+      'ticker    ticker    ticker'
+      'chart     book      form'
+      'positions positions form';
+  }
+}
+
+.panel {
+  min-width: 0;
+  background: var(--surface-2);
+  border-radius: 6px;
+  padding: 8px 10px;
+  h4 {
+    margin: 0 0 6px;
+    font-size: 13px;
+  }
+}
+
+.ticker {
+  grid-area: ticker;
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 6px 10px;
+  background: var(--surface-2);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  .tick {
+    display: flex;
+    gap: 6px;
+    white-space: nowrap;
+  }
+}
+
+.chart {
+  grid-area: chart;
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+  color: var(--up);
+  svg {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    background:
+      linear-gradient(var(--border) 1px, transparent 1px) 0 0 / 100% 25%,
+      linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0 / 10% 100%;
+  }
+}
+
+.book {
+  grid-area: book;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  &__head,
+  .level {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__head {
+    color: var(--text-muted);
+  }
+  .level {
+    position: relative;
+    padding: 1px 0;
+    // 深度條：用 CSS 變數 --w 控制寬度
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: var(--w);
+      opacity: 0.18;
+    }
+    > * {
+      position: relative;
+    }
+  }
+  .asks {
+    display: flex;
+    flex-direction: column-reverse; // 賣單價格由下往上遞增
+    .level::before {
+      background: var(--down);
+    }
+  }
+  .bids .level::before {
+    background: var(--up);
+  }
+  .spread {
+    padding: 4px 0;
+    font-size: 14px;
+    text-align: center;
+  }
+}
+
+.form {
+  grid-area: form;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  label {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .submit {
+    margin-top: auto;
+    padding: 8px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--up);
+    color: #fff;
+    font-weight: 600;
+    &.sell {
+      background: var(--down);
+    }
+  }
+}
+
+.seg {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  button {
+    flex: 1;
+    padding: 6px;
+    border: 0;
+    background: none;
+    color: var(--text-muted);
+    &.on-buy {
+      background: var(--up);
+      color: #fff;
+    }
+    &.on-sell {
+      background: var(--down);
+      color: #fff;
+    }
+    &.on {
+      background: var(--surface);
+      color: var(--text);
+    }
+  }
+  &.small {
+    display: inline-flex;
+    margin-bottom: 6px;
+    button {
+      flex: none;
+      padding: 3px 12px;
+    }
+  }
+}
+
+.positions {
+  grid-area: positions;
+  overflow-x: auto;
+}

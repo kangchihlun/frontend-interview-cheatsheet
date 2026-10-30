@@ -1,0 +1,16 @@
+<div class="row">
+  @for (t of themes; track t) {
+    <button class="btn" type="button" [class.primary]="theme() === t" (click)="theme.set(t)">{{ t }}</button>
+  }
+</div>
+
+<!-- 只改一個 attribute，底下所有元件透過 CSS 變數自動換色（不需重新編譯 SCSS） -->
+<div class="themed" [attr.data-theme]="theme()">
+  <h4>主題：{{ theme() }}</h4>
+  <p>SCSS map 在編譯期用 &#64;each 產生每個主題的 CSS 變數，執行期只要切換 data-theme。</p>
+  <div class="row">
+    <button class="t-btn" type="button">主要按鈕</button>
+    <button class="t-btn t-btn--ghost" type="button">次要按鈕</button>
+    <span class="chip">標籤</span>
+  </div>
+</div>

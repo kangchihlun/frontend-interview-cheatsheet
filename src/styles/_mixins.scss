@@ -1,0 +1,44 @@
+@use 'sass:map';
+@use 'tokens' as t;
+
+// 行動優先（min-width）斷點 mixin：@include m.up(md) { ... }
+@mixin up($bp) {
+  @media (min-width: map.get(t.$breakpoints, $bp)) {
+    @content;
+  }
+}
+
+// 桌機優先（max-width）斷點 mixin
+@mixin down($bp) {
+  @media (max-width: (map.get(t.$breakpoints, $bp) - 0.02px)) {
+    @content;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin truncate($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+// demo 盒子共用外觀
+@mixin demo-box($color: var(--primary)) {
+  border: 1px dashed color-mix(in srgb, #{$color} 60%, transparent);
+  background: color-mix(in srgb, #{$color} 14%, transparent);
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 12px;
+}

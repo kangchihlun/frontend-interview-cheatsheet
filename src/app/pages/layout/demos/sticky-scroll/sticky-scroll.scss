@@ -1,0 +1,101 @@
+@use 'mixins' as m;
+
+// position: sticky 生效條件：
+// 1. 要設 top / left 等門檻值
+// 2. 祖先中「最近的捲動容器」就是它黏住的範圍；中間任一層 overflow: hidden 會讓它失效
+// 3. 只會在父元素範圍內黏住（父元素滑出畫面它也跟著走）
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.label {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.table-wrap {
+  height: 260px;
+  overflow: auto; // 捲動容器
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+table {
+  border-collapse: separate; // collapse 時 sticky 的邊框會消失
+  border-spacing: 0;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  th,
+  td {
+    padding: 4px 10px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    text-align: right;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--surface-2);
+  }
+  tbody th {
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+    text-align: left;
+  }
+  thead th:first-child {
+    left: 0;
+    z-index: 2; // 左上角要壓在兩個方向的 sticky 上面
+  }
+}
+
+.group-list {
+  height: 260px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  h4 {
+    position: sticky;
+    top: 0;
+    margin: 0;
+    padding: 4px 10px;
+    background: var(--surface-2);
+    color: var(--primary);
+    font-size: 13px;
+  }
+}
+
+.item {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel {
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  header,
+  footer {
+    flex: none;
+    padding: 8px 10px;
+    background: var(--surface-2);
+  }
+  footer {
+    text-align: right;
+  }
+  .body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain; // 捲到底不會帶動外層頁面
+  }
+}

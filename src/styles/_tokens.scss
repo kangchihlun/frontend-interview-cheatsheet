@@ -1,0 +1,61 @@
+// ─────────────────────────────────────────────
+// Design tokens：SCSS map → CSS 自訂屬性（runtime 可切換主題）
+// 面試重點：SCSS 變數是「編譯期」，CSS var 是「執行期」，兩者搭配使用
+// ─────────────────────────────────────────────
+@use 'sass:map';
+
+$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+);
+
+$space: (
+  0: 0,
+  1: 4px,
+  2: 8px,
+  3: 12px,
+  4: 16px,
+  5: 24px,
+  6: 32px,
+);
+
+$themes: (
+  dark: (
+    bg: #0b0e14,
+    surface: #131722,
+    surface-2: #1c2130,
+    border: #2a3142,
+    text: #d6dbe6,
+    text-muted: #8a93a6,
+    primary: #4f8cff,
+    up: #16c784,
+    down: #ea3943,
+    warn: #f5a623,
+    code-bg: #0f131c,
+  ),
+  light: (
+    bg: #f4f6fa,
+    surface: #ffffff,
+    surface-2: #eef1f6,
+    border: #d8dde6,
+    text: #1b2230,
+    text-muted: #5b6475,
+    primary: #2463eb,
+    up: #0e9f6e,
+    down: #d92d3a,
+    warn: #c27c0e,
+    code-bg: #f6f8fb,
+  ),
+);
+
+@function space($key) {
+  @return map.get($space, $key);
+}
+
+@mixin theme-vars($name) {
+  @each $token, $value in map.get($themes, $name) {
+    --#{$token}: #{$value};
+  }
+}

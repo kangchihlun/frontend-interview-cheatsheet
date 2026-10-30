@@ -1,0 +1,90 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+figure {
+  margin: 0;
+}
+
+figcaption {
+  margin-top: 6px;
+  font-size: 12px;
+  code {
+    display: block;
+    margin-top: 2px;
+    white-space: pre-wrap;
+  }
+}
+
+.stage {
+  height: 120px;
+  background: repeating-linear-gradient(45deg, var(--surface-2) 0 8px, var(--surface) 8px 16px);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.child {
+  width: 80px;
+  padding: 8px 0;
+  text-align: center;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+// 1. Flex
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// 2. Grid（最短）
+.grid-place {
+  display: grid;
+  place-items: center;
+}
+
+// 3. absolute + transform（不需知道子元素尺寸）
+.abs-transform {
+  position: relative;
+  .child {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+// 4. absolute + inset: 0 + margin: auto（子元素需有寬高）
+.abs-margin {
+  position: relative;
+  .child {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    height: fit-content;
+  }
+}
+
+// 5. flex 子元素 margin: auto
+.flex-margin {
+  display: flex;
+  .child {
+    margin: auto;
+  }
+}
+
+// 6. 行內：text-align + line-height（單行文字）
+.inline {
+  text-align: center;
+  line-height: 120px;
+  .child {
+    display: inline-block;
+    line-height: normal;
+    vertical-align: middle;
+  }
+}

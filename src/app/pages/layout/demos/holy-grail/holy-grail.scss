@@ -1,0 +1,90 @@
+@use 'mixins' as m;
+
+.label {
+  margin: 14px 0 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+%box {
+  @include m.demo-box;
+}
+
+// ① Grid 版
+.hg-grid {
+  display: grid;
+  min-height: 320px; // 真實頁面用 min-height: 100dvh
+  grid-template:
+    'header header header' auto
+    'nav    main   aside' 1fr
+    'footer footer footer' auto
+    / 200px 1fr 160px;
+  gap: 8px;
+
+  > * {
+    @extend %box;
+  }
+  header { grid-area: header; }
+  nav { grid-area: nav; }
+  main {
+    grid-area: main;
+    p {
+      margin: 4px 0;
+    }
+  }
+  aside { grid-area: aside; }
+  footer { grid-area: footer; }
+
+  @include m.down(md) {
+    grid-template:
+      'header' auto
+      'nav' auto
+      'main' 1fr
+      'aside' auto
+      'footer' auto
+      / 1fr;
+  }
+}
+
+// ② Flex 版
+.hg-flex {
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  gap: 8px;
+
+  > header,
+  > footer {
+    @extend %box;
+  }
+
+  .body {
+    flex: 1; // 中段撐滿，footer 被推到底
+    display: flex;
+    gap: 8px;
+    > * {
+      @extend %box;
+    }
+  }
+  nav {
+    flex: 0 0 160px;
+    order: -1;
+  }
+  main {
+    flex: 1;
+    min-width: 0;
+  }
+  aside {
+    flex: 0 0 140px;
+  }
+
+  @include m.down(md) {
+    .body {
+      flex-direction: column;
+    }
+    nav,
+    aside {
+      flex-basis: auto;
+    }
+  }
+}

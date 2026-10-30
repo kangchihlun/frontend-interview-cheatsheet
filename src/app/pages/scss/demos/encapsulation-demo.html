@@ -1,0 +1,15 @@
+<div class="stack">
+  <p class="title">父元件自己的 .title（藍色）——子元件的 .title 不會被影響，反之亦然</p>
+  <app-enc-emulated />
+  <app-enc-none />
+  <p class="enc-leaky">↑ 這行在「父元件」裡，也被 None 的全域樣式染綠了</p>
+  <app-enc-shadow />
+
+  <div class="row">
+    <label><input type="checkbox" [checked]="compact()" (change)="compact.set(!compact())" /> compact（:host(.compact)）</label>
+    <label><input type="checkbox" [checked]="dark()" (change)="dark.set(!dark())" /> 祖先加 .dark-zone（:host-context）</label>
+  </div>
+  <div [class.dark-zone]="dark()">
+    <app-enc-host [compact]="compact()" />
+  </div>
+</div>

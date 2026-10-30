@@ -1,0 +1,13 @@
+<div class="grid">
+  @for (m of methods; track m.cls) {
+    <figure>
+      <div class="stage {{ m.cls }}">
+        <div class="child">置中</div>
+      </div>
+      <figcaption>
+        <strong>{{ m.name }}</strong>
+        <code>{{ m.code }}</code>
+      </figcaption>
+    </figure>
+  }
+</div>

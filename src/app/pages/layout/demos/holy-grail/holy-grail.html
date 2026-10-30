@@ -1,0 +1,28 @@
+<p class="label">① Grid 版聖杯：header / nav / main / aside / footer，footer 永遠貼底（內容少時也不會浮上來）</p>
+<div class="hg-grid">
+  <header>header</header>
+  <nav>nav 200px</nav>
+  <main>
+    main（1fr）
+    @for (p of paragraphs(); track $index) {
+      <p>段落 {{ $index + 1 }}</p>
+    }
+    <div class="row">
+      <button class="btn" type="button" (click)="add()">+ 加內容</button>
+      <button class="btn" type="button" (click)="reset()">重置</button>
+    </div>
+  </main>
+  <aside>aside 160px</aside>
+  <footer>footer（sticky footer）</footer>
+</div>
+
+<p class="label">② Flex 版聖杯：外層 column，中段 row；中段 flex: 1 撐滿</p>
+<div class="hg-flex">
+  <header>header</header>
+  <div class="body">
+    <nav>nav</nav>
+    <main>main · order 可調整視覺順序（DOM 中 main 在前利於 SEO/無障礙）</main>
+    <aside>aside</aside>
+  </div>
+  <footer>footer</footer>
+</div>

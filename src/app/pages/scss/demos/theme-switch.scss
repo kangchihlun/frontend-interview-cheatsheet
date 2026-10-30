@@ -1,0 +1,68 @@
+@use 'sass:map';
+@use 'sass:color';
+
+// 1) 主題定義：巢狀 map
+$themes: (
+  ocean: (brand: #2f80ed, bg: #0d1b2a, fg: #e0f0ff),
+  forest: (brand: #27ae60, bg: #0f1f14, fg: #e3f7e9),
+  sunset: (brand: #f2994a, bg: #2a160d, fg: #fff0e3),
+  contrast: (brand: #ffd400, bg: #000000, fg: #ffffff),
+);
+
+// 2) 編譯期：@each 產生 [data-theme='xxx'] { --brand: ...; }
+//    並用 sass:color 先算好衍生色（hover、淡色）
+@each $name, $t in $themes {
+  [data-theme='#{$name}'] {
+    --brand: #{map.get($t, brand)};
+    --brand-hover: #{color.adjust(map.get($t, brand), $lightness: -10%)};
+    --brand-soft: #{color.change(map.get($t, brand), $alpha: 0.18)};
+    --t-bg: #{map.get($t, bg)};
+    --t-fg: #{map.get($t, fg)};
+  }
+}
+
+// 3) 執行期：元件只吃 CSS 變數
+.themed {
+  margin-top: 10px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--t-bg);
+  color: var(--t-fg);
+  transition: background 0.3s, color 0.3s;
+  h4 {
+    margin: 0 0 4px;
+    color: var(--brand);
+  }
+  p {
+    margin: 0 0 10px;
+    font-size: 13px;
+    opacity: 0.85;
+  }
+}
+
+.t-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--brand);
+  border-radius: 6px;
+  background: var(--brand);
+  color: var(--t-bg);
+  font-weight: 600;
+  &:hover {
+    background: var(--brand-hover);
+  }
+  &--ghost {
+    background: transparent;
+    color: var(--brand);
+    &:hover {
+      background: var(--brand-soft);
+    }
+  }
+}
+
+.chip {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 12px;
+}

@@ -1,0 +1,23 @@
+<div class="row controls">
+  <span class="muted">拖拉中間的分隔線；左 {{ left().toFixed(0) }}% · 右上 {{ top().toFixed(0) }}%</span>
+  <button class="btn" type="button" (click)="reset()">重置</button>
+</div>
+
+<div #root class="split" [class.is-dragging]="dragging()" (pointermove)="move($event)" (pointerup)="end()">
+  <section class="pane" [style.flex-basis.%]="left()">
+    <h4>商品清單</h4>
+    <p class="muted">flex-basis 由 signal 控制</p>
+  </section>
+
+  <div class="gutter gutter--x" role="separator" aria-orientation="vertical" (pointerdown)="start('x', $event)"></div>
+
+  <section #rightCol class="col">
+    <div class="pane" [style.flex-basis.%]="top()">
+      <h4>K 線圖</h4>
+    </div>
+    <div class="gutter gutter--y" role="separator" aria-orientation="horizontal" (pointerdown)="start('y', $event)"></div>
+    <div class="pane grow">
+      <h4>委託 / 成交</h4>
+    </div>
+  </section>
+</div>

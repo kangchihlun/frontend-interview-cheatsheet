@@ -1,0 +1,113 @@
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:color';
+@use 'mixins' as m;
+
+// ── 自訂 function：px → rem ──
+$base-font: 16px;
+
+@function rem($px) {
+  @if math.unit($px) != 'px' {
+    @error 'rem() 只接受 px，收到 #{$px}';
+  }
+  @return math.div($px, $base-font) * 1rem;
+}
+
+// ── Design tokens ──
+$variants: (
+  primary: #4f8cff,
+  success: #16c784,
+  danger: #ea3943,
+  warning: #f5a623,
+);
+
+$sizes: (
+  sm: (pad: 4px 10px, font: 12px),
+  md: (pad: 6px 14px, font: 14px),
+  lg: (pad: 10px 20px, font: 16px),
+);
+
+// ── Placeholder：共用基底，@extend 不會產生多餘 class ──
+%btn-base {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-weight: 600;
+  line-height: 1.2;
+  transition:
+    background 0.15s,
+    transform 0.1s;
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+// ── Mixin：帶參數 + 預設值 ──
+@mixin btn-variant($color, $text: #fff) {
+  background: $color;
+  color: $text;
+  &:hover:not(:disabled) {
+    background: color.adjust($color, $lightness: -8%);
+  }
+  &.b--outline {
+    background: transparent;
+    color: $color;
+    border-color: $color;
+    &:hover:not(:disabled) {
+      background: color.change($color, $alpha: 0.12);
+    }
+  }
+}
+
+.b {
+  @extend %btn-base;
+  padding: rem(6px) rem(14px);
+  font-size: rem(14px);
+}
+
+@each $name, $color in $variants {
+  .b--#{$name} {
+    // warning 底色較亮 → 文字改深色（@if 條件）
+    @if $name == warning {
+      @include btn-variant($color, #1b1b1b);
+    } @else {
+      @include btn-variant($color);
+    }
+  }
+}
+
+@each $name, $cfg in $sizes {
+  .b--#{$name} {
+    padding: map.get($cfg, pad);
+    font-size: rem(map.get($cfg, font));
+  }
+}
+
+// ── @for 產生間距工具類 ──
+@for $i from 0 through 5 {
+  .p-#{$i} {
+    padding: rem($i * 4px);
+  }
+}
+
+.label {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.line {
+  margin-bottom: 8px;
+}
+
+.spacer {
+  @include m.demo-box(var(--up));
+}
+
+.truncate-demo {
+  max-width: 420px;
+  @include m.truncate(2);
+}

@@ -1,0 +1,24 @@
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">FE</span>
+    <div>
+      <strong>前端面試題庫</strong>
+      <small>Angular 22 · SCSS · RxJS · 交易系統</small>
+    </div>
+  </div>
+  <button class="btn" type="button" (click)="toggleTheme()">
+    {{ theme() === 'dark' ? '☀ 淺色' : '☾ 深色' }}
+  </button>
+</header>
+
+<nav class="tabbar" aria-label="主題分類">
+  @for (tab of tabs; track tab.path) {
+    <a [routerLink]="tab.path" routerLinkActive="active" ariaCurrentWhenActive="page">
+      <span class="icon">{{ tab.icon }}</span>{{ tab.label }}
+    </a>
+  }
+</nav>
+
+<main class="content">
+  <router-outlet />
+</main>

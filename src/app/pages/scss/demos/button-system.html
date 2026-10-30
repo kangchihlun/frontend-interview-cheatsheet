@@ -1,0 +1,18 @@
+<p class="label">variant × size 全部由 SCSS &#64;each + mixin 產生；.p-0 ~ .p-5 間距工具類由自訂 function 計算 rem</p>
+@for (v of variants; track v) {
+  <div class="row line">
+    @for (s of sizes; track s) {
+      <button type="button" class="b b--{{ v }} b--{{ s }}">{{ v }} / {{ s }}</button>
+    }
+    <button type="button" class="b b--{{ v }} b--outline">outline</button>
+    <button type="button" class="b b--{{ v }}" disabled>disabled</button>
+  </div>
+}
+
+<div class="row line">
+  @for (i of [0, 1, 2, 3, 4, 5]; track i) {
+    <span class="spacer p-{{ i }}">p-{{ i }}</span>
+  }
+</div>
+
+<p class="truncate-demo">truncate mixin（2 行）：這是一段非常非常長的文字，用來示範多行省略號的 mixin，超過兩行之後就會被截斷並顯示省略號，在商品名稱、新聞標題很常用到這個技巧，面試常考 -webkit-line-clamp。</p>
